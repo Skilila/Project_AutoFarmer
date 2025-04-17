@@ -1,45 +1,63 @@
-HELP.md
-.gradle
-build/
-!gradle/wrapper/gradle-wrapper.jar
-!**/src/main/**/build/
-!**/src/test/**/build/
+#HELP.md
+#.gradle
+#build/
+#!gradle/wrapper/gradle-wrapper.jar
+#!**/src/main/**/build/
+#!**/src/test/**/build/
+#
+#### STS ###
+#.apt_generated
+#.classpath
+#.factorypath
+#.project
+#.settings
+#.springBeans
+#.sts4-cache
+#bin/
+#!**/src/main/**/bin/
+#!**/src/test/**/bin/
+#
+#### IntelliJ IDEA ###
+#.idea
+#*.iws
+#*.iml
+#*.ipr
+#out/
+#!**/src/main/**/out/
+#!**/src/test/**/out/
+#
+#### NetBeans ###
+#/nbproject/private/
+#/nbbuild/
+#/dist/
+#/nbdist/
+#/.nb-gradle/
+#
+#### VS Code ###
+#.vscode/
+#
+#### Kotlin ###
+#.kotlin
+#
+#
+#src/main/frontend/.bundle/
+#src/main/frontend/.idea/
+#src/main/frontend/.yarn
+#src/main/frontend/__tests__/
+#src/main/frontend/gradle/
+#src/main/frontend/node_modules/
+#src/main/frontend/android/.gradle/
+#src/main/frontend/android/.kotlin/
+#src/main/frontend/android/build/
+#src/main/frontend/android/gradle/
+#src/main/frontend/android/app/.cxx/
+#src/main/frontend/android/app/build/
 
-### STS ###
-.apt_generated
-.classpath
-.factorypath
-.project
-.settings
-.springBeans
-.sts4-cache
-bin/
-!**/src/main/**/bin/
-!**/src/test/**/bin/
-
-### IntelliJ IDEA ###
-.idea
-*.iws
-*.iml
-*.ipr
-out/
-!**/src/main/**/out/
-!**/src/test/**/out/
-
-### NetBeans ###
-/nbproject/private/
-/nbbuild/
-/dist/
-/nbdist/
-/.nb-gradle/
-
-### VS Code ###
-.vscode/
-
-### Kotlin ###
-.kotlin
-
-
+.gradle/
+.idea/
+gradle/
+src/test/
+src/main/resources/
 src/main/frontend/.bundle/
 src/main/frontend/.idea/
 src/main/frontend/.yarn
@@ -52,5 +70,19 @@ src/main/frontend/android/build/
 src/main/frontend/android/gradle/
 src/main/frontend/android/app/.cxx/
 src/main/frontend/android/app/build/
+src/main/frontend/*.js
+src/main/frontend/*.json
+src/main/frontend/*.ts
+src/main/frontend/*.tsx
+src/main/frontend/gradlew
+src/main/frontend/gradlew.bat
+src/main/frontend/HELP.md
+src/main/frontend/.gitattributes
+src/main/frontend/.watchmanconfig
+src/main/frontend/android/*.yml
+src/main/frontend/android/Gemfile
+
+
+
 
 
