@@ -38,3 +38,19 @@ out/
 
 ### Kotlin ###
 .kotlin
+
+
+src/main/frontend/.bundle/
+src/main/frontend/.idea/
+src/main/frontend/.yarn
+src/main/frontend/__tests__/
+src/main/frontend/gradle/
+src/main/frontend/node_modules/
+src/main/frontend/android/.gradle/
+src/main/frontend/android/.kotlin/
+src/main/frontend/android/build/
+src/main/frontend/android/gradle/
+src/main/frontend/android/app/.cxx/
+src/main/frontend/android/app/build/
+
+
