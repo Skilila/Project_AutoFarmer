@@ -1,0 +1,14 @@
+{
+  "name": "frontend",
+  "packageManager": "yarn@4.6.0",
+  "devDependencies": {
+    "@react-native-community/cli": "latest",
+    "@types/react": "^19"
+  },
+  "dependencies": {
+    "@react-native/gradle-plugin": "^0.79.1",
+    "@react-native/metro-config": "^0.79.1",
+    "react": "^19.1.0",
+    "react-native": "^0.79.1"
+  }
+}
