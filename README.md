@@ -1,3 +1,10 @@
+# figma
+
+figma의 다음 링크대로 작성될 예정입니다.
+https://www.figma.com/design/RND4LH7Fx3m9gLqeRB2zrQ/Untitled?node-id=0-1&p=f&t=AYsNNkvEcdsBsLPT-0
+
+
+
 This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
 
 # Getting Started
