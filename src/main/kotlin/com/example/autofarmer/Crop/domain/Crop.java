@@ -1,5 +1,6 @@
 package com.example.autofarmer.Crop.domain;
 
+import io./
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
