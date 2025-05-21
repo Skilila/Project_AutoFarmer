@@ -2,6 +2,7 @@
 .idea/
 gradle/
 build/
+src/main/resources/application.yml
 
 
 frontend/.yarn/
@@ -14,7 +15,4 @@ frontend/android/gradle/
 frontend/android/app/build/
 frontend/android/app/.cxx/
 frontend/src/main/resources/
-
-
-
-
+src/test/resources/application-test.yml
