@@ -1,0 +1,52 @@
+POST http://localhost:8080/api/auth/signup
+Content-Type: application/json
+
+{
+  "email": "dream0136ms@gmail.com",
+  "nickname": "test",
+  "password": "testuser01"
+}
+
+###
+POST http://localhost:8080/api/auth/send-email
+Content-Type: application/json
+
+{
+  "email": "dream0136ms@gmail.com"
+}
+
+###
+POST http://localhost:8080/api/auth/verify-email?token=
+
+
+
+###
+POST http://localhost:8080/api/auth/send-sms
+Content-Type: application/json
+
+{
+  "phone": "01029669446"
+}
+
+###
+POST http://localhost:8080/api/auth/verify-sms
+Content-Type: application/json
+
+{
+  "code": ""
+}
+
+###
+POST http://localhost:8080/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "dream0136ms@gmail.com",
+  "password": "testuser01"
+}
+
+###
+POST http://localhost:8080/api/auth/logout
+Authorization: Bearer eyJhbGciOiJSUzM4NCJ9.eyJzdWIiOiI3MTI4OTM4NTgyMzUxMjE5MzEiLCJpc3MiOiJhdXRvZmFybWVyIiwiaWF0IjoxNzQ3ODAzOTQ3LCJleHAiOjE3NDc4MDc1NDd9.ADUeqdmRtRJt-k4xyVLVFMb_Vwb9WVGY5bQAqbN-BSAYIJRz62Q0XwLdnplhSPqw7Iu3ka_3Zc9qgEWoLuDjB8EkIIokaPni3dDXPNWSakjIaPVqB2HiwkwvfwvheZO33q61IhSIDPpszn9UDfltZQ6kV0lhZwIjrEB546W_USjeIj7vHMc2VXYbR1Ej8tENP5P7Xv6tdu8aHZzgRdRo8RTVanVNMN1BYXUK_1xMHVs6ObS5N072zwwMlSWtfIQVIU4u00KJLH4_fH1JhwK0RuvLa2y_zjyS1nxRwiaUQWlPsCKr-EcmeYX40GL0m-GcEgJhLRtMuqAzVMT3bSv_vbT49a9nWN-SzXKKPya7vcpEjQ77QBmBLjHqRe0Co-YAK9Cj142brV4vWJ-KAqsR2ce_XT8FpkDAqwblvpTT6Bk0CW0tf2VwvGw3yOB2-O_dEy9dSommI39csQ8npr60GdiK8SJdnn4aNVZkfcFwR-1k4L5Cery7CKr7XkAlj4Xa
+Refresh-Token: eyJhbGciOiJSUzM4NCJ9.eyJzdWIiOiI3MTI4OTM4NTgyMzUxMjE5MzEiLCJpc3MiOiJhdXRvZmFybWVyIiwiaWF0IjoxNzQ3ODAzOTQ3LCJleHAiOjE3NDc4MDc1NDd9.ADUeqdmRtRJt-k4xyVLVFMb_Vwb9WVGY5bQAqbN-BSAYIJRz62Q0XwLdnplhSPqw7Iu3ka_3Zc9qgEWoLuDjB8EkIIokaPni3dDXPNWSakjIaPVqB2HiwkwvfwvheZO33q61IhSIDPpszn9UDfltZQ6kV0lhZwIjrEB546W_USjeIj7vHMc2VXYbR1Ej8tENP5P7Xv6tdu8aHZzgRdRo8RTVanVNMN1BYXUK_1xMHVs6ObS5N072zwwMlSWtfIQVIU4u00KJLH4_fH1JhwK0RuvLa2y_zjyS1nxRwiaUQWlPsCKr-EcmeYX40GL0m-GcEgJhLRtMuqAzVMT3bSv_vbT49a9nWN-SzXKKPya7vcpEjQ77QBmBLjHqRe0Co-YAK9Cj142brV4vWJ-KAqsR2ce_XT8FpkDAqwblvpTT6Bk0CW0tf2VwvGw3yOB2-O_dEy9dSommI39csQ8npr60GdiK8SJdnn4aNVZkfcFwR-1k4L5Cery7CKr7XkAlj4Xa
+Content-Type: application/json
