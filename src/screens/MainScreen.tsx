@@ -1,10 +1,65 @@
-import React from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, ActivityIndicator, Alert } from 'react-native';
 
-const API_KEY = 'YOUR_API_KEY'; // 발급되는대로 OpenWeatherMap API 키로 교체
+const API_KEY = '948cca00bed4f917800c626aba79a4cc'; // 발급되는대로 OpenWeatherMap API 키로 교체
 const CITY = 'Seoul'; // 원하는 도시 이름, 부산대신 일단은 서울로
 
+// 날씨 데이터 타입 정의
+interface WeatherData {
+  name: string;
+  main: {
+    temp: number;
+    feels_like: number;
+    temp_min: number;
+    temp_max: number;
+    humidity: number;
+  };
+  weather: Array<{
+    main: string;
+    description: string;
+  }>;
+}
+
 const MainScreen = () => {
+  const [weatherData, setWeatherData] = useState<WeatherData | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const fetchWeatherData = async () => {
+    try {
+      setLoading(true);
+      const response = await fetch(
+        `https://api.openweathermap.org/data/2.5/weather?q=${CITY}&appid=${API_KEY}&units=metric&lang=kr`
+      );
+      
+      if (!response.ok) {
+        throw new Error('날씨 정보를 가져오는데 실패했습니다');
+      }
+      
+      const data = await response.json();
+      setWeatherData(data);
+      setError(null);
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : '알 수 없는 오류가 발생했습니다';
+      setError(errorMessage);
+      console.log('날씨 API 에러:', errorMessage);
+      // Alert.alert('에러', errorMessage); // 필요시 주석 해제
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchWeatherData();
+    
+    // 30분마다 날씨 데이터 업데이트
+    const interval = setInterval(() => {
+      fetchWeatherData();
+    }, 30 * 60 * 1000);
+    
+    return () => clearInterval(interval);
+  }, []);
+
   return (
     <View style={styles.container}>
       {/* 헤더1 */}
@@ -32,8 +87,30 @@ const MainScreen = () => {
 
       {/* 날씨 */}
       <View style={styles.currentDateContainer}>
-        <TouchableOpacity style={styles.currentDateButton}>
-          <Text style={styles.currentDateText}>현재 날씨</Text>
+        <TouchableOpacity 
+          style={styles.currentDateButton}
+          onPress={fetchWeatherData}
+        >
+          {loading ? (
+            <View style={styles.weatherContainer}>
+              <ActivityIndicator color="#333" size="small" />
+              <Text style={styles.loadingText}>날씨 정보 로딩중...</Text>
+            </View>
+          ) : weatherData ? (
+            <View style={styles.weatherContainer}>
+              <Text style={styles.currentDateText}>
+                {weatherData.name} {Math.round(weatherData.main.temp)}°C
+              </Text>
+              <Text style={styles.weatherDescription}>
+                {weatherData.weather[0].description} | 습도 {weatherData.main.humidity}%
+              </Text>
+              <Text style={styles.weatherDetail}>
+                체감온도 {Math.round(weatherData.main.feels_like)}°C
+              </Text>
+            </View>
+          ) : (
+            <Text style={styles.currentDateText}>현재 날씨</Text>
+          )}
         </TouchableOpacity>
       </View>
 
@@ -128,9 +205,30 @@ const styles = StyleSheet.create({
     paddingHorizontal: 30,
     paddingVertical: 15,
     borderRadius: 10,
+    minWidth: 250,
+    alignItems: 'center',
   },
   currentDateText: {
     fontSize: 16,
+    fontWeight: 'bold',
+  },
+  weatherContainer: {
+    alignItems: 'center',
+  },
+  weatherDescription: {
+    fontSize: 12,
+    color: '#555',
+    marginTop: 4,
+  },
+  weatherDetail: {
+    fontSize: 11,
+    color: '#777',
+    marginTop: 2,
+  },
+  loadingText: {
+    fontSize: 12,
+    color: '#555',
+    marginTop: 5,
   },
   moreButtonContainer: {
     alignItems: 'center',
@@ -185,6 +283,34 @@ const styles = StyleSheet.create({
   cardMore: {
     fontSize: 14,
     marginTop: 20,
+  },
+  // 날씨 카드 스타일 추가
+  weatherCardContent: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  weatherCardTitle: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    marginBottom: 10,
+    color: '#333',
+  },
+  weatherCardTemp: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#2c5aa0',
+    marginBottom: 5,
+  },
+  weatherCardDesc: {
+    fontSize: 12,
+    color: '#555',
+    marginBottom: 8,
+  },
+  weatherCardDetail: {
+    fontSize: 11,
+    color: '#666',
+    marginVertical: 1,
   },
 });
 

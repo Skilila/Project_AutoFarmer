@@ -18,7 +18,7 @@ const LoginScreen = () => {
 
   // 임시로그인, 아래처럼 입력하면 임시로 로그인 가능.
   const dummyUser = {
-    email: 'test@example.com',
+    email: 'test@a.com',
     password: '1234',
   };
 
