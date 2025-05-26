@@ -10,29 +10,29 @@ type RootStackParamList = {
   Main: undefined;
 };
 
-const LoginScreen = () => {
+const SignUpScreen = () => {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
 
-  // 임시로그인, 아래처럼 입력하면 임시로 로그인 가능.
-  const dummyUser = {
-    email: 'test@example.com',
-    password: '1234',
-  };
-
-  const handleLogin = () => {
-    if (email === dummyUser.email && password === dummyUser.password) {
-      navigation.replace('Loading');
+  const handleSignUp = () => {
+    if (!email || !password || !confirmPassword) {
+      setError('모든 항목을 입력해주세요.');
+    } else if (password !== confirmPassword) {
+      setError('비밀번호가 일치하지 않습니다.');
     } else {
-      setError('이메일 또는 비밀번호가 틀렸습니다.');
+      // 실제 앱에서는 이쪽에 회원가입 호출이 들어감. 즉, 아직까지는 입력한다해도 실제로 해당 이메일로
+      // 로그인은 불가능. loginscreen의 더미로그인을 쓸것.
+      setError('');
+      navigation.replace('Login');
     }
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>로그인</Text>
+      <Text style={styles.title}>회원가입</Text>
       <TextInput
         style={styles.input}
         placeholder="이메일"
@@ -48,9 +48,15 @@ const LoginScreen = () => {
         value={password}
         onChangeText={setPassword}
       />
+      <TextInput
+        style={styles.input}
+        placeholder="비밀번호 확인"
+        secureTextEntry
+        value={confirmPassword}
+        onChangeText={setConfirmPassword}
+      />
       {error ? <Text style={styles.error}>{error}</Text> : null}
-      <Button title="로그인" onPress={handleLogin} />
-      <Button title="회원가입" onPress={() => navigation.navigate('SignUp')} />
+      <Button title="회원가입" onPress={handleSignUp} />
     </View>
   );
 };
@@ -62,4 +68,4 @@ const styles = StyleSheet.create({
   error: { color: 'red', marginBottom: 10 },
 });
 
-export default LoginScreen;
+export default SignUpScreen;
