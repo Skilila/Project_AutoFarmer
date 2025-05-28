@@ -17,9 +17,9 @@ class UserDetailsService(
     }
 
 
-    fun loadUserByUserNo(userNo: Long): UserDetails {
-        val user = userRepository.findByUserNo(userNo)
-            ?: throw UsernameNotFoundException("사용자를 찾을 수 없습니다.: $userNo")
+    fun loadUserByUserId(userId: Long): UserDetails {
+        val user = userRepository.findByUserId(userId)
+            ?: throw UsernameNotFoundException("사용자를 찾을 수 없습니다.: $userId")
         return UserDetails(user)
     }
 }

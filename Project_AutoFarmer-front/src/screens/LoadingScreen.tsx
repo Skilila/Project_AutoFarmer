@@ -5,8 +5,9 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 // Stack Param 타입 정의
 type RootStackParamList = {
-  Loading: undefined;
   Login: undefined;
+  SignUp: undefined;
+  Loading: undefined;
   Main: undefined;
 };
 

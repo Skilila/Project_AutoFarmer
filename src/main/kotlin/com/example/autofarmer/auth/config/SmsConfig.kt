@@ -7,12 +7,13 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 
+// SMS 관련 설정을 위한 Configuration 클래스
 @Configuration
 @EnableConfigurationProperties(SmsProperties::class)
 class SmsConfig(
     private val smsProperties: SmsProperties
 ) {
-
+    // DefaultMessageService 빈 등록
     @Bean
     fun messageService(): DefaultMessageService {
         val messageService = NurigoApp.initialize(

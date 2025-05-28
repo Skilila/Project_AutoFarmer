@@ -1,7 +1,8 @@
 .gradle/
 .idea/
-frontend/
-SmartFarm_All/
-gradle/
 build/
-src/main/resources/application.yml
+gradle/
+Project_AutoFarmer-front/
+src/main/http
+src/main/resources
+.gitattributes

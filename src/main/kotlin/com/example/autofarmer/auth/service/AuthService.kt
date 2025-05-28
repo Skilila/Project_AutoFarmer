@@ -16,7 +16,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import java.time.Duration
-import java.time.LocalDateTime
+import java.time.Instant
 
 @Service
 class AuthService(
@@ -34,8 +34,8 @@ class AuthService(
     //회원가입
     fun signup(request: AuthRequest.Signup): UserDTO {
         //가입된 이메일인지 확인
-        val isMember = userRepository.existsByEmail(request.email)
-        if (isMember) {
+        val isUser = userRepository.existsByEmail(request.email)
+        if (isUser) {
             throw BadCredentialsException("이미 가입된 이메일입니다.")
         } else {
             //비밀번호 암호화
@@ -45,9 +45,8 @@ class AuthService(
                 request.email,
                 request.nickname,
                 encodedPassword,
-                "ACTIVE"
             )
-            user.createdAt = LocalDateTime.now()
+            user.createdAt = Instant.now()
             //신규 회원 저장 후 반환
             userRepository.save(user)
             return user.toDTO()
@@ -69,23 +68,23 @@ class AuthService(
                 throw BadCredentialsException("비밀번호가 일치하지 않습니다.")
             }
             //로그인 시간 수정
-            user.lastLogin = LocalDateTime.now()
+            user.lastLogin = Instant.now()
             //토큰 생성
             val accessToken = jwtService.generateToken(
-                user.userNo.toString(),
+                user.userId.toString(),
             )
             val refreshToken = jwtService.generateToken(
-                user.userNo.toString(),
+                user.userId.toString(),
             )
             //리프레시 토큰을 Redis에 저장
             redisTemplate.opsForValue().set(
-                "refresh_token:${user.userNo}",
+                "refresh_token:${user.userId}",
                 refreshToken,
                 Duration.ofMillis(refreshTokenExpiration)
             )
             return AuthResponse.Login(
                 true,
-                user.userNo,
+                user.userId,
                 accessToken,
                 refreshToken,
             )
@@ -146,14 +145,14 @@ class AuthService(
             throw IllegalArgumentException("유효하지 않은 토큰입니다.")
         }
         // 액세스 토큰에서 회원 정보 추출
-        val userNo = jwtService.extractClaims(pureAccessToken).subject.toLongOrNull()
+        val userId = jwtService.extractClaims(pureAccessToken).subject.toLongOrNull()
             ?: throw IllegalArgumentException("회원 정보 없음")
         // Redis에서 리프레시 토큰 조회
-        val storedRefreshToken = redisTemplate.opsForValue().get("refresh_token:$userNo")
+        val storedRefreshToken = redisTemplate.opsForValue().get("refresh_token:$userId")
         // 토큰 일치 여부 확인
         if (storedRefreshToken != null && storedRefreshToken == refreshToken) {
             // Redis에서 리프레시 토큰 삭제
-            redisTemplate.delete("refresh_token:$userNo")
+            redisTemplate.delete("refresh_token:$userId")
             // 액세스 토큰 블랙리스트 등록
             val remainingTime = accessTokenExpiration - System.currentTimeMillis()
             if (remainingTime > 0) {
@@ -174,12 +173,12 @@ class AuthService(
             throw IllegalArgumentException("유효하지 않은 토큰입니다.")
         }
         // 액세스 토큰에서 회원 정보 추출
-        val userNo = jwtService.extractClaims(pureAccessToken).subject.toLongOrNull()
+        val userId = jwtService.extractClaims(pureAccessToken).subject.toLongOrNull()
             ?: throw IllegalArgumentException("회원 정보 없음")
         // 2. Redis에서 리프레시 토큰 조회
-        redisTemplate.opsForValue().get("refresh_token:$userNo")
+        redisTemplate.opsForValue().get("refresh_token:$userId")
         // 5. Redis에서 리프레시 토큰 삭제
-        redisTemplate.delete("refresh_token:$userNo")
+        redisTemplate.delete("refresh_token:$userId")
         // 6. 액세스 토큰 블랙리스트 등록
         val remainingTime = accessTokenExpiration - System.currentTimeMillis()
         if (remainingTime > 0) {
@@ -190,7 +189,7 @@ class AuthService(
             )
         }
         // 4. 회원 정보 영구 삭제
-        val user = userRepository.findByUserNo(userNo)
+        val user = userRepository.findByUserId(userId)
             ?: throw IllegalArgumentException("존재하지 않는 회원입니다.")
         userRepository.delete(user)
     }

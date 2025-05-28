@@ -35,11 +35,11 @@ class JwtAuthenticationFilter(
             //헤더에서 JWT 토큰 추출
             val jwt = authHeader.substringAfter("Bearer ").trim()
             //토큰에서 사용자 번호 추출
-            val userNo = jwtService.extractClaims(jwt).subject.toLongOrNull()
+            val userId = jwtService.extractClaims(jwt).subject.toLongOrNull()
             //인증되지 않은 사용자인 경우
-            if (userNo != null && SecurityContextHolder.getContext().authentication == null) {
+            if (userId != null && SecurityContextHolder.getContext().authentication == null) {
                 //사용자 번호로 사용자 정보 로드
-                val foundUser: UserDetails = userDetailsService.loadUserByUserNo(userNo)
+                val foundUser: UserDetails = userDetailsService.loadUserByUserId(userId)
                 //토큰이 유효한 경우
                 if (jwtService.validateToken(jwt)) {
                     //인증 토큰 생성

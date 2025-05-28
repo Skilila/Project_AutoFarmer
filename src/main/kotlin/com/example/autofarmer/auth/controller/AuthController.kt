@@ -12,7 +12,6 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.authentication.BadCredentialsException
 import org.springframework.web.bind.annotation.*
-import org.springframework.web.servlet.mvc.support.RedirectAttributes
 
 @RestController
 @RequestMapping("/api/auth")
@@ -24,32 +23,31 @@ class AuthController(
     //회원가입
     @PostMapping("/signup")
     fun signup(
-        @Valid @RequestBody request: AuthRequest.Signup,
-        redirectAttributes: RedirectAttributes
+        @Valid
+        @RequestBody request: AuthRequest.Signup
     ): ResponseEntity<UserDTO> {
-        //authService를 통해 회원가입 처리
         return try {
+            //authService를 통해 회원가입 처리
             authService.signup(request)
-            ResponseEntity.status(HttpStatus.CREATED).body(UserDTO(request.email, request.nickname, "ACTIVE"))
+            ResponseEntity.status(HttpStatus.CREATED).body(UserDTO(nickname = request.nickname, email = request.email))
         } catch (_: BadCredentialsException) {
-            redirectAttributes.addFlashAttribute("error", "이미 가입된 이메일입니다.")
-            ResponseEntity.status(HttpStatus.FOUND)
-                .header("Location", "/login")
-                .body(UserDTO(request.email, request.nickname, "ACTIVE"))
+            //이미 가입된 이메일인 경우
+            throw BadCredentialsException("이미 가입된 이메일입니다.")
         }
     }
 
     //이메일 인증번호 발송
     @PostMapping("/send-email")
-    fun sendEmail(@RequestBody request: AuthRequest.SendEmail): ResponseEntity<Map<String, String>> {
-        val token = emailService.sendEmail(request.email)
-        return ResponseEntity.status(HttpStatus.OK)
-            .body(
-                mapOf(
-                    "message" to "이메일 인증번호가 발송되었습니다.",
-                    "token" to token
-                )
-            )
+    fun sendEmail(@RequestBody request: AuthRequest.SendEmail): ResponseEntity<String> {
+
+        return try {
+            //emailService를 통해 이메일 인증번호 발송
+            val token = emailService.sendEmail(request.email)
+            ResponseEntity.ok("이메일 인증번호가 발송되었습니다.token: $token")
+        } catch (_: Exception) {
+            //이메일 발송 실패
+            ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("이메일 인증번호 발송에 실패했습니다.")
+        }
     }
 
     //이메일 인증 확인
@@ -57,27 +55,37 @@ class AuthController(
     fun verifyEmail(
         @RequestParam("token") token: String,
     ): ResponseEntity<String> {
-        //이메일 인증 토큰 검증
+        //emailService를 통해 이메일 인증 확인
         val isVerified = emailService.verifyEmail(token)
         return if (isVerified) {
             ResponseEntity.ok("이메일 인증이 완료되었습니다.")
-            ResponseEntity.status(HttpStatus.FOUND).header("Location", "/login").build()
         } else {
+            //이메일 인증 실패
             ResponseEntity.status(HttpStatus.BAD_REQUEST).body("이메일 인증에 실패했습니다.")
         }
     }
 
     //휴대폰 인증번호 발송
     @PostMapping("/send-sms")
-    fun sendSms(@RequestBody phone: String) = smsService.sendSms(phone)
+    fun sendSms(@RequestBody phone: String): ResponseEntity<String> {
+
+        return try {
+            //smsService를 통해 휴대폰 인증번호 발송
+            smsService.sendSms(phone)
+            ResponseEntity.ok("휴대폰 인증번호가 발송되었습니다.")
+        } catch (_: Exception) {
+            //휴대폰 인증번호 발송 실패
+            ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("휴대폰 인증번호 발송에 실패했습니다.")
+        }
+    }
 
     //휴대폰 인증 확인
     @PostMapping("/verify-sms")
     fun verifySms(@RequestBody code: String): ResponseEntity<String> {
+        //smsService를 통해 휴대폰 인증 확인
         val isVerified = smsService.verifySms(code)
         return if (isVerified) {
             ResponseEntity.ok("휴대폰 인증이 완료되었습니다.")
-            ResponseEntity.status(HttpStatus.FOUND).header("Location", "/login").build()
         } else {
             ResponseEntity.status(HttpStatus.BAD_REQUEST).body("휴대폰 인증에 실패했습니다.")
         }
@@ -91,10 +99,10 @@ class AuthController(
         val loginResponse = authService.login(request)
         if (loginResponse.isSuccess) {
             println("로그인 성공")
-            return ResponseEntity.status(HttpStatus.OK).body(
+            return ResponseEntity.ok(
                 AuthResponse.Login(
                     true,
-                    loginResponse.userNo,
+                    loginResponse.userId,
                     loginResponse.accessToken,
                     loginResponse.refreshToken
                 )
@@ -119,7 +127,7 @@ class AuthController(
         @RequestBody(required = false) request: AuthRequest.ResetPassword?
     ): Any {
         return if (token.isNullOrBlank()) {
-            //비밀번호 재설정 요청
+            // authService를 통해 비밀번호 재설정 이메일 발송
             authService.sendPasswordResetEmail(request?.email ?: "")
         } else {
             //비밀번호 재설정
@@ -136,12 +144,13 @@ class AuthController(
     fun logout(
         @RequestHeader("Authorization") accessToken: String,
         @RequestHeader("Refresh-Token") refreshToken: String
-    ): ResponseEntity<out Map<String, Any?>> {
+    ): ResponseEntity<String> {
         return try {
+            // authService를 통해 로그아웃 처리
             authService.logout(accessToken, refreshToken)
-            ResponseEntity.ok(mapOf("success" to true, "message" to "로그아웃이 완료되었습니다."))
-        } catch (e: JwtException) {
-            ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(mapOf("success" to false, "error" to e.message))
+            ResponseEntity.ok("로그아웃이 완료되었습니다.")
+        } catch (_: JwtException) {
+            ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그아웃에 실패했습니다")
         }
     }
 
@@ -150,7 +159,12 @@ class AuthController(
     fun withdraw(
         @RequestHeader("Authorization") accessToken: String
     ): ResponseEntity<String> {
-        authService.withdraw(accessToken)
-        return ResponseEntity.ok("회원탈퇴가 완료되었습니다.")
+        return try {
+            // authService를 통해 회원탈퇴 처리
+            authService.withdraw(accessToken)
+            ResponseEntity.ok("회원탈퇴가 완료되었습니다.")
+        } catch (_: JwtException) {
+            ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("회원탈퇴에 실패했습니다.")
+        }
     }
 }
