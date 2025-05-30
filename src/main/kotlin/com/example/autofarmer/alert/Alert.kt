@@ -1,4 +1,4 @@
-package com.example.autofarmer.crop.domain
+package com.example.autofarmer.alert
 
 import com.example.autofarmer.user.domain.User
 import com.github.f4b6a3.tsid.TsidCreator

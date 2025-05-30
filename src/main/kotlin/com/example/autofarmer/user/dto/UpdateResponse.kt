@@ -2,7 +2,7 @@ package com.example.autofarmer.user.dto
 
 import com.example.autofarmer.user.domain.User
 import java.io.Serializable
-import java.time.Instant
+import java.time.LocalDateTime
 
 data class UpdateResponse(
     val userId: Long?,
@@ -10,7 +10,7 @@ data class UpdateResponse(
     val email: String,
     val password: String,
     val alertType: String?,
-    val updatedAt: Instant?
+    val updatedAt: LocalDateTime?
 ) : Serializable {
     companion object {
         fun fromEntity(user: User): UpdateResponse {

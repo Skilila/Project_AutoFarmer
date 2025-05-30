@@ -1,6 +1,5 @@
-package com.example.autofarmer.preset.domain
+package com.example.autofarmer.farm.domain
 
-import com.example.autofarmer.crop.domain.Crop
 import com.example.autofarmer.user.domain.User
 import com.github.f4b6a3.tsid.TsidCreator
 import jakarta.persistence.*
@@ -18,33 +17,31 @@ import java.time.LocalDateTime
 )
 class Preset(
     @Id
-    var presetId: Long = TsidCreator.getTsid().toLong(),//Preset테이블 PK
+    var presetId: Long = TsidCreator.getTsid().toLong(),
 
     @field:NotNull
-    @MapsId("userId")
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "user_id", nullable = false)
-    var user: User,//User테이블 참조 FK
+    var user: User,
 
     @field:NotNull
-    @MapsId("cropId")
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "crop_id", nullable = false)
-    var crop: Crop,//Crop테이블 참조 FK
+    var crop: Crop,
 
     @field:NotNull
     @Column(nullable = false)
-    var temperature: Double,//사용자 프리셋 기온
+    var temperature: Double,
 
     @field:NotNull
     @Column(nullable = false)
-    var humidity: Double,//사용자 프리셋 습도
-
+    var humidity: Double,
+) {
     @field:NotNull
     @Column(nullable = false)
     @CreatedDate
-    var createdAt: LocalDateTime,//프리셋 생성일시
+    var createdAt: LocalDateTime = LocalDateTime.now()
 
     @LastModifiedDate
-    var updatedAt: LocalDateTime? = null,//프리셋 수정일시
-)
+    var updatedAt: LocalDateTime? = null
+}

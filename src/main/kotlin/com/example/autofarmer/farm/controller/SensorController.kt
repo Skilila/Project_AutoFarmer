@@ -1,7 +1,7 @@
-package com.example.autofarmer.crop.controller
+package com.example.autofarmer.farm.controller
 
-import com.example.autofarmer.crop.domain.Sensor
-import com.example.autofarmer.crop.service.SensorService
+import com.example.autofarmer.farm.domain.Sensor
+import com.example.autofarmer.farm.service.SensorService
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController

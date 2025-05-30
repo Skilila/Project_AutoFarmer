@@ -1,7 +1,7 @@
-package com.example.autofarmer.crop.controller
+package com.example.autofarmer.farm.controller
 
-import com.example.autofarmer.crop.domain.Crop
-import com.example.autofarmer.crop.service.CropService
+import com.example.autofarmer.farm.domain.Crop
+import com.example.autofarmer.farm.service.CropService
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
@@ -12,7 +12,7 @@ class CropController(
 ) {
     //작물 카테고리 조회
     @GetMapping("/categories")
-    fun getCropCategories(): ResponseEntity<List<Category>> {
+    fun getCropCategories(): ResponseEntity<List<String>> {
         val categories = cropService.getAllCategories()
         return ResponseEntity.ok(categories)
     }
@@ -29,13 +29,13 @@ class CropController(
     //작물 상세 정보 조회
     @GetMapping("/{cropId}")
     fun getCropDetail(
-        @PathVariable cropId: Int
+        @PathVariable cropId: Long
     ): ResponseEntity<Crop> {
         val crop = cropService.getCropDetail(cropId)
         return ResponseEntity.ok(crop)
     }
 
-    //작물 온도/습도 범위로 필터링
+    //작물- 필터링
     @GetMapping("/filter")
     fun filterCrops(
         @RequestParam minTemp: Double?,
@@ -49,31 +49,23 @@ class CropController(
         return ResponseEntity.ok(crops)
     }
 
-    //작물 즐겨찾기 등록
-    @PostMapping("/{cropId}/favorite")
-    fun addFavoriteCrop(
-        @PathVariable cropId: Int,
-        @RequestParam userId: Long
+    //작물 추가
+    @PostMapping("/add")
+    fun addCrop(
+        @RequestBody crop: Crop
     ): ResponseEntity<String> {
-        cropService.addFavoriteCrop(cropId, userId)
-        return ResponseEntity.ok("즐겨찾기 등록 완료")
+        cropService.addCrop(crop)
+        return ResponseEntity.ok("작물 추가 완료")
     }
 
-    //작물 즐겨찾기 조회
-    @GetMapping("/favorites")
-    fun getFavoriteCrops(
-        @RequestParam userId: Long
-    ): List<Crop> {
-        return cropService.getFavoriteCrops(userId)
+    //작물 삭제
+    @DeleteMapping("/{cropId}")
+    fun deleteCrop(
+        @PathVariable cropId: Long
+    ): ResponseEntity<String> {
+        cropService.deleteCrop(cropId)
+        return ResponseEntity.ok("작물 삭제 완료")
     }
 
-    //작물 즐겨찾기 해제
-    @DeleteMapping("/{cropId}/favorite")
-    fun removeFavoriteCrop(
-        @RequestParam userId: Long,
-        @PathVariable cropId: Int
-    ): ResponseEntity<String> {
-        cropService.removeFavoriteCrop(userId, cropId)
-        return ResponseEntity.ok("즐겨찾기 해제 완료")
-    }
+
 }

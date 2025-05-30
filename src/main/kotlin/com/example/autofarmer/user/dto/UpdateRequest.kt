@@ -8,5 +8,5 @@ data class UpdateRequest(
     val nickname: String? = null,
     val email: String? = null,
     val password: String? = null,
-    val notificationType: String? = null,
+    val alertType: String? = null,
 ) : Serializable

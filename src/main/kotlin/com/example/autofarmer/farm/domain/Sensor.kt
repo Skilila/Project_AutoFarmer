@@ -1,4 +1,4 @@
-package com.example.autofarmer.crop.domain
+package com.example.autofarmer.farm.domain
 
 import com.github.f4b6a3.tsid.TsidCreator
 import jakarta.persistence.*
@@ -11,24 +11,26 @@ import jakarta.validation.constraints.Size
         Index(name = "fk_sensor_crop1_idx", columnList = "crop_id")
     ]
 )
-class Sensor {
+class Sensor(
     @Id
-    var sensorId: Long = TsidCreator.getTsid().toLong() // TSID를 사용하여 고유한 ID 생성
+    var sensorId: Long = TsidCreator.getTsid().toLong(),
 
+    @field:NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "crop_id")
-    var crop: Crop? = null // Crop 테이블과의 연관 관계
+    var crop: Crop,
 
+    @field:NotNull
     @Size(max = 10)
-    @NotNull
     @Column(nullable = false, length = 10)
-    var type: String = "TEMPERATURE" // 기본값을 TEMPERATURE로 설정
+    var type: String = "TEMPERATURE",
 
+    @field:NotNull
     @Size(max = 10)
-    @NotNull
     @Column(nullable = false, length = 10)
-    var status: String = "NORMAL" // 기본값을 NORMAL로 설정
+    var status: String = "NORMAL",
 
+    @field:NotNull
     @Lob
-    var description: String? = null
-}
+    var description: String = ""
+)

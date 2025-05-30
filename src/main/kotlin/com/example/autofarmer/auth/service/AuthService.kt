@@ -16,7 +16,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import java.time.Duration
-import java.time.Instant
+import java.time.LocalDateTime
 
 @Service
 class AuthService(
@@ -39,14 +39,13 @@ class AuthService(
             throw BadCredentialsException("이미 가입된 이메일입니다.")
         } else {
             //비밀번호 암호화
-            val encodedPassword = passwordEncoder.encode(request.password)
+            passwordEncoder.encode(request.password)
             //신규 회원 생성
             val user = User(
-                request.email,
-                request.nickname,
-                encodedPassword,
+                email = request.email,
+                nickname = request.nickname
             )
-            user.createdAt = Instant.now()
+            user.createdAt = LocalDateTime.now()
             //신규 회원 저장 후 반환
             userRepository.save(user)
             return user.toDTO()
@@ -68,7 +67,7 @@ class AuthService(
                 throw BadCredentialsException("비밀번호가 일치하지 않습니다.")
             }
             //로그인 시간 수정
-            user.lastLogin = Instant.now()
+            user.lastLogin = LocalDateTime.now()
             //토큰 생성
             val accessToken = jwtService.generateToken(
                 user.userId.toString(),
@@ -189,8 +188,9 @@ class AuthService(
             )
         }
         // 4. 회원 정보 영구 삭제
-        val user = userRepository.findByUserId(userId)
-            ?: throw IllegalArgumentException("존재하지 않는 회원입니다.")
+        val user = userRepository.findById(userId).orElseThrow {
+            IllegalArgumentException("존재하지 않는 회원입니다.")
+        }
         userRepository.delete(user)
     }
 }
