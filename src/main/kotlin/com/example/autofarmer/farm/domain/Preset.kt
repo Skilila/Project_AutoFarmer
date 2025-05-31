@@ -1,7 +1,7 @@
 package com.example.autofarmer.farm.domain
 
 import com.example.autofarmer.user.domain.User
-import com.github.f4b6a3.tsid.TsidCreator
+import io.hypersistence.utils.hibernate.id.Tsid
 import jakarta.persistence.*
 import jakarta.validation.constraints.NotNull
 import org.springframework.data.annotation.CreatedDate
@@ -17,7 +17,8 @@ import java.time.LocalDateTime
 )
 class Preset(
     @Id
-    var presetId: Long = TsidCreator.getTsid().toLong(),
+    @Tsid
+    var presetId: Long? = null,
 
     @field:NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
@@ -42,6 +43,8 @@ class Preset(
     @CreatedDate
     var createdAt: LocalDateTime = LocalDateTime.now()
 
+    @field:NotNull
+    @Column(nullable = false)
     @LastModifiedDate
-    var updatedAt: LocalDateTime? = null
+    var updatedAt: LocalDateTime = LocalDateTime.now()
 }

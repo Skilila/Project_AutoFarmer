@@ -1,6 +1,6 @@
 package com.example.autofarmer.farm.domain
 
-import com.github.f4b6a3.tsid.TsidCreator
+import io.hypersistence.utils.hibernate.id.Tsid
 import jakarta.persistence.*
 import jakarta.validation.constraints.NotNull
 import jakarta.validation.constraints.Size
@@ -13,7 +13,8 @@ import jakarta.validation.constraints.Size
 )
 class Sensor(
     @Id
-    var sensorId: Long = TsidCreator.getTsid().toLong(),
+    @Tsid
+    var sensorId: Long? = null,
 
     @field:NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)

@@ -4,7 +4,7 @@ import io.jsonwebtoken.*
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.data.redis.core.StringRedisTemplate
 import org.springframework.stereotype.Component
-import java.security.KeyPairGenerator
+import java.security.*
 import java.security.SignatureException
 import java.util.*
 
@@ -14,12 +14,12 @@ class JwtService(
     @Value("\${jwt.access-expiration}")
     private val accessTokenExpiration: Long,
 ) {
-    val keyGen = KeyPairGenerator.getInstance("RSA").apply {
+    val keyGen: KeyPairGenerator = KeyPairGenerator.getInstance("RSA").apply {
         initialize(3072)
     }
-    val keyPair = keyGen.generateKeyPair()
-    val privateKey = keyPair.private
-    val publicKey = keyPair.public
+    val keyPair: KeyPair = keyGen.generateKeyPair()
+    val privateKey: PrivateKey = keyPair.private
+    val publicKey: PublicKey = keyPair.public
 
     //토큰 생성 메서드
     fun generateToken(

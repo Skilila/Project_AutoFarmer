@@ -15,6 +15,7 @@ repositories {
 }
 
 dependencies {
+    implementation("com.squareup.okio:okio-jvm:3.12.0")
     implementation("org.springframework.boot:spring-boot-starter-web:3.4.5")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa:3.4.5")
     implementation("org.springframework.boot:spring-boot-starter-security:3.4.5")
@@ -25,6 +26,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-redis:3.4.5")
     implementation("io.netty:netty-common:4.2.1.Final")
     implementation("io.netty:netty-handler:4.2.1.Final")
+    implementation("io.hypersistence:hypersistence-utils-hibernate-63:3.9.10")
     implementation("org.projectlombok:lombok:1.18.38")
     implementation("org.jetbrains.kotlin:kotlin-reflect:1.9.25")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.9.25")

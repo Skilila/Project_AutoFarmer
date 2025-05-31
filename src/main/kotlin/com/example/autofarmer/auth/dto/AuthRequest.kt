@@ -40,8 +40,4 @@ sealed class AuthRequest {
         val token: String,
         val newPassword: String
     ) : AuthRequest()
-
-    data class Logout(
-        val accessToken: String
-    ) : AuthRequest()
 }

@@ -39,11 +39,12 @@ class AuthService(
             throw BadCredentialsException("이미 가입된 이메일입니다.")
         } else {
             //비밀번호 암호화
-            passwordEncoder.encode(request.password)
+            val encodedpassword = passwordEncoder.encode(request.password)
             //신규 회원 생성
             val user = User(
                 email = request.email,
-                nickname = request.nickname
+                nickname = request.nickname,
+                password = encodedpassword,
             )
             user.createdAt = LocalDateTime.now()
             //신규 회원 저장 후 반환

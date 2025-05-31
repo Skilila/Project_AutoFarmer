@@ -1,3 +1,5 @@
+package com.example.autofarmer.auth.config
+
 import com.example.autofarmer.auth.dto.EmailProperties
 import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean

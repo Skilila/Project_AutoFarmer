@@ -1,6 +1,6 @@
 package com.example.autofarmer.farm.domain
 
-import com.github.f4b6a3.tsid.TsidCreator
+import io.hypersistence.utils.hibernate.id.Tsid
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.Id
@@ -13,7 +13,8 @@ import java.time.LocalDateTime
 @Table(name = "weather", schema = "smartfarmdb")
 class Weather(
     @Id
-    var weatherId: Long = TsidCreator.getTsid().toLong(),
+    @Tsid
+    var weatherId: Long? = null,
 
     @field:NotNull
     @Column(nullable = false)
