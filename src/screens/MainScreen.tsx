@@ -20,24 +20,67 @@ interface WeatherData {
   }>;
 }
 
+// 예보 데이터 타입 정의
+interface ForecastData {
+  list: Array<{
+    dt: number;
+    main: {
+      temp: number;
+      temp_min: number;
+      temp_max: number;
+      humidity: number;
+    };
+    weather: Array<{
+      main: string;
+      description: string;
+    }>;
+  }>;
+}
+
 const MainScreen = () => {
   const [weatherData, setWeatherData] = useState<WeatherData | null>(null);
+  const [tomorrowWeather, setTomorrowWeather] = useState<any>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const fetchWeatherData = async () => {
     try {
       setLoading(true);
-      const response = await fetch(
+      
+      // 현재 날씨 가져오기
+      const currentResponse = await fetch(
         `https://api.openweathermap.org/data/2.5/weather?q=${CITY}&appid=${API_KEY}&units=metric&lang=kr`
       );
       
-      if (!response.ok) {
+      // 5일 예보 가져오기
+      const forecastResponse = await fetch(
+        `https://api.openweathermap.org/data/2.5/forecast?q=${CITY}&appid=${API_KEY}&units=metric&lang=kr`
+      );
+      
+      if (!currentResponse.ok || !forecastResponse.ok) {
         throw new Error('날씨 정보를 가져오는데 실패했습니다');
       }
       
-      const data = await response.json();
-      setWeatherData(data);
+      const currentData = await currentResponse.json();
+      const forecastData: ForecastData = await forecastResponse.json();
+      
+      setWeatherData(currentData);
+      
+      // 내일 날씨 찾기 (24시간 후 데이터)
+      const tomorrow = new Date();
+      tomorrow.setDate(tomorrow.getDate() + 1);
+      tomorrow.setHours(12, 0, 0, 0); // 내일 정오 기준
+      
+      const tomorrowTimestamp = Math.floor(tomorrow.getTime() / 1000);
+      
+      // 가장 가까운 내일 데이터 찾기
+      const tomorrowData = forecastData.list.find(item => {
+        const itemDate = new Date(item.dt * 1000);
+        const targetDate = new Date(tomorrow);
+        return itemDate.getDate() === targetDate.getDate();
+      }) || forecastData.list[8]; // 약 24시간 후 데이터 (3시간 간격 * 8 = 24시간)
+      
+      setTomorrowWeather(tomorrowData);
       setError(null);
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : '알 수 없는 오류가 발생했습니다';
@@ -67,9 +110,30 @@ const MainScreen = () => {
         <Text style={styles.headerText}>30일에 재배할 내 토마토 - 1</Text>
       </View>
 
-      {/* 피쳐 헤더2 사용처가 정해지지 않는다면 삭제 */}
+      {/* 내일 날씨 헤더 */}
       <View style={styles.subHeader}>
-        <Text style={styles.subHeaderText}>피쳐1</Text>
+        <TouchableOpacity 
+          style={styles.tomorrowWeatherContainer}
+          onPress={fetchWeatherData}
+        >
+          {loading ? (
+            <View style={styles.tomorrowWeatherContent}>
+              <ActivityIndicator color="#666" size="small" />
+              <Text style={styles.loadingText}>로딩중...</Text>
+            </View>
+          ) : tomorrowWeather ? (
+            <View style={styles.tomorrowWeatherContent}>
+              <Text style={styles.tomorrowWeatherText}>
+                내일: {Math.round(tomorrowWeather.main.temp)}°C
+              </Text>
+              <Text style={styles.tomorrowWeatherDesc}>
+                {tomorrowWeather.weather[0].description}
+              </Text>
+            </View>
+          ) : (
+            <Text style={styles.subHeaderText}>날씨 정보 없음</Text>
+          )}
+        </TouchableOpacity>
       </View>
 
       {/* 받는 데이터 */}
@@ -85,7 +149,7 @@ const MainScreen = () => {
         </View>
       </View>
 
-      {/* 날씨 */}
+      {/* 오늘 날씨 */}
       <View style={styles.currentDateContainer}>
         <TouchableOpacity 
           style={styles.currentDateButton}
@@ -99,7 +163,7 @@ const MainScreen = () => {
           ) : weatherData ? (
             <View style={styles.weatherContainer}>
               <Text style={styles.currentDateText}>
-                {weatherData.name} {Math.round(weatherData.main.temp)}°C
+                오늘 {weatherData.name} {Math.round(weatherData.main.temp)}°C
               </Text>
               <Text style={styles.weatherDescription}>
                 {weatherData.weather[0].description} | 습도 {weatherData.main.humidity}%
@@ -165,6 +229,24 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#666',
     textAlign: 'right',
+  },
+  // 내일 날씨 스타일 추가
+  tomorrowWeatherContainer: {
+    alignItems: 'flex-end',
+  },
+  tomorrowWeatherContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  tomorrowWeatherText: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    color: '#333',
+    marginRight: 8,
+  },
+  tomorrowWeatherDesc: {
+    fontSize: 12,
+    color: '#666',
   },
   metricsContainer: {
     flexDirection: 'row',
