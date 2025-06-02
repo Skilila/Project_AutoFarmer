@@ -1,6 +1,7 @@
 .github
 .gradle/
 .idea/
+.kotlin/
 build/
 gradle/
 Project_AutoFarmer-front/

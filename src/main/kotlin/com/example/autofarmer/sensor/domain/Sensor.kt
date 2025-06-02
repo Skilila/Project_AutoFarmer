@@ -1,5 +1,6 @@
-package com.example.autofarmer.farm.domain
+package com.example.autofarmer.sensor.domain
 
+import com.example.autofarmer.farm.domain.Crop
 import io.hypersistence.utils.hibernate.id.Tsid
 import jakarta.persistence.*
 import jakarta.validation.constraints.NotNull
@@ -33,5 +34,6 @@ class Sensor(
 
     @field:NotNull
     @Lob
+    @Column(nullable = false)
     var description: String = ""
 )

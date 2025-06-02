@@ -5,5 +5,5 @@ import com.example.autofarmer.user.domain.User
 import org.springframework.data.jpa.repository.JpaRepository
 
 interface AlertRepository : JpaRepository<Alert, Long> {
-    fun findAllByUser(user: User): List<Alert>
+    fun findAllByUserOrderByCreatedAtDesc(user: User): List<Alert>
 }

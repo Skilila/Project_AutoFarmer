@@ -1,8 +1,8 @@
 plugins {
-    kotlin("jvm") version "1.9.25"
-    kotlin("plugin.spring") version "1.9.25"
-    kotlin("plugin.jpa") version "1.9.25"
-    id("org.jetbrains.kotlin.android") version "1.9.25" apply false
+    kotlin("jvm") version "2.1.21"
+    kotlin("plugin.spring") version "2.1.21"
+    kotlin("plugin.jpa") version "2.1.21"
+    id("org.jetbrains.kotlin.android") version "2.1.21" apply false
 }
 
 group = "com.example"
@@ -28,8 +28,8 @@ dependencies {
     implementation("io.netty:netty-handler:4.2.1.Final")
     implementation("io.hypersistence:hypersistence-utils-hibernate-63:3.9.10")
     implementation("org.projectlombok:lombok:1.18.38")
-    implementation("org.jetbrains.kotlin:kotlin-reflect:1.9.25")
-    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.9.25")
+    implementation("org.jetbrains.kotlin:kotlin-reflect:2.1.21")
+    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:2.1.21")
     implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.4.0")
     implementation("com.github.f4b6a3:tsid-creator:5.2.6")
     implementation("io.jsonwebtoken:jjwt-api:0.12.6")

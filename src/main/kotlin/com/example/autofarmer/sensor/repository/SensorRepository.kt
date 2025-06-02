@@ -1,6 +1,6 @@
-package com.example.autofarmer.farm.repository
+package com.example.autofarmer.sensor.repository
 
-import com.example.autofarmer.farm.domain.Sensor
+import com.example.autofarmer.sensor.domain.Sensor
 import org.springframework.data.jpa.repository.JpaRepository
 
 interface SensorRepository : JpaRepository<Sensor, Long>

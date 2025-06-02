@@ -1,7 +1,7 @@
-package com.example.autofarmer.farm.service
+package com.example.autofarmer.sensor.service
 
-import com.example.autofarmer.farm.domain.Sensor
-import com.example.autofarmer.farm.repository.SensorRepository
+import com.example.autofarmer.sensor.domain.Sensor
+import com.example.autofarmer.sensor.repository.SensorRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 

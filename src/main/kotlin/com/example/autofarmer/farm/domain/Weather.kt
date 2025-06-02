@@ -22,6 +22,10 @@ class Weather(
 
     var temperature: Double? = null,
 
+    var temperatureMin: Double? = null,
+
+    var temperatureMax: Double? = null,
+
     var humidity: Double? = null,
 
     @Size(max = 10)

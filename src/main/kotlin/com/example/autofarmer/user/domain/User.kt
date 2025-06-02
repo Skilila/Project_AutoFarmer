@@ -39,11 +39,6 @@ class User(
 
     @Size(max = 10)
     @field:NotNull
-    @Column(nullable = false, length = 10)
-    var alertType: String = "NONE",
-
-    @Size(max = 10)
-    @field:NotNull
     @Column(name = "role", nullable = false, length = 10)
     var role: String = "USER",
 
@@ -51,10 +46,6 @@ class User(
     @field:NotNull
     @Column(nullable = false, length = 10)
     var status: String = "ACTIVE",
-
-    @field:NotNull
-    @Column(nullable = false)
-    var isRead: Boolean = false
 ) {
     var lastLogin: LocalDateTime? = null
 

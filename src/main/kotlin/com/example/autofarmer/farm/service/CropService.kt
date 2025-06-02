@@ -58,7 +58,7 @@ class CropService(
     //작물 추가
     fun addCrop(crop: Crop): Crop {
         //이미 추가한 작물인지 확인
-        if (cropRepository.existsById(crop.cropId)) {
+        if (cropRepository.existsById(crop.cropId!!)) {
             throw IllegalArgumentException("작물 ID가 이미 존재합니다: ${crop.cropId}")
         }
         //작물 추가 및 저장
