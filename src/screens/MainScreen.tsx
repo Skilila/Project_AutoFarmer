@@ -47,12 +47,12 @@ const MainScreen = () => {
     try {
       setLoading(true);
       
-      // 현재 날씨 가져오기
+      // 현재 날씨 api 가져오기
       const currentResponse = await fetch(
         `https://api.openweathermap.org/data/2.5/weather?q=${CITY}&appid=${API_KEY}&units=metric&lang=kr`
       );
       
-      // 5일 예보 가져오기
+      // 5일 예보 api 가져오기, "내일 날씨"를 스크린에 표기하기 위해 필요한 api. 
       const forecastResponse = await fetch(
         `https://api.openweathermap.org/data/2.5/forecast?q=${CITY}&appid=${API_KEY}&units=metric&lang=kr`
       );
