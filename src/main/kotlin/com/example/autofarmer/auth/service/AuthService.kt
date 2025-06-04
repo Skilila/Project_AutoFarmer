@@ -1,6 +1,6 @@
 package com.example.autofarmer.auth.service
 
-import com.example.autofarmer.TokenAndCodeGenerator
+import com.example.autofarmer.auth.TokenAndCodeGenerator
 import com.example.autofarmer.auth.dto.AuthRequest
 import com.example.autofarmer.auth.dto.AuthResponse
 import com.example.autofarmer.security.jwt.JwtService

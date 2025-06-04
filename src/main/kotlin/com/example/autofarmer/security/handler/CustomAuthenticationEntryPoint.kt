@@ -14,6 +14,7 @@ class CustomAuthenticationEntryPoint(
     @Qualifier("handlerExceptionResolver")
     private val resolver: HandlerExceptionResolver
 ) : AuthenticationEntryPoint {
+    // AuthenticationEntryPoint 인터페이스를 구현하여 인증되지 않은 사용자가 보호된 리소스에 접근할 때 호출되는 엔트리 포인트
     override fun commence(
         request: HttpServletRequest,
         response: HttpServletResponse,

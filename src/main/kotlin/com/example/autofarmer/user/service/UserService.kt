@@ -49,7 +49,6 @@ class UserService(
         request.nickname?.let { user.nickname = it }
         request.email?.let { user.email = it }
         request.password?.let { user.password = passwordEncoder.encode(it) }
-        request.alertType?.let { user.alertType = it }
         val updatedUser = userRepository.save(user)
 
         return UpdateResponse.fromEntity(updatedUser)

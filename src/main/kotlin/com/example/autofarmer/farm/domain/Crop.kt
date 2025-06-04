@@ -14,26 +14,26 @@ import jakarta.validation.constraints.Size
 class Crop(
     @Id
     @Tsid
-    var cropId: Long? = null,
+    var cropId: Long? = null, // 작물 ID
 
     @field:NotNull
     @Size(max = 30)
     @Column(nullable = false, length = 30)
-    var name: String = "",
+    var name: String = "", // 작물 이름
 
     @field:NotNull
     @Size(max = 10)
     @Column(nullable = false, length = 10)
-    var category: String = "",
+    var category: String = "", // 작물 품종
 
-    var temperature: Double? = null,
+    var temperature: Double? = null, // 작물 현재 온도
 
-    var humidity: Double? = null,
+    var humidity: Double? = null, // 작물 현재 습도
 
     @field:NotNull
     @Size(max = 10)
     @Column(nullable = false, length = 10)
-    var status: String = "NORMAL",
+    var status: String = "NORMAL", // 작물 상태
 
-    var isPreset: Boolean = false,
+    var isPreset: Boolean = false, // 프리셋 여부 (기본값: false, 프리셋으로 등록된 작물은 true로 설정됨
 )

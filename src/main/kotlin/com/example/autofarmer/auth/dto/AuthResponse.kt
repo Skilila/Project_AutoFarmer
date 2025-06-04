@@ -1,6 +1,8 @@
 package com.example.autofarmer.auth.dto
 
+// 인증 응답을 위한 DTO 클래스
 sealed class AuthResponse {
+    // 로그인 응답
     data class Login(
         val isSuccess: Boolean,//로그인 성공 여부
         val userId: Long?,//사용자 번호

@@ -1,6 +1,6 @@
 package com.example.autofarmer.auth.service
 
-import com.example.autofarmer.TokenAndCodeGenerator
+import com.example.autofarmer.auth.TokenAndCodeGenerator
 import com.example.autofarmer.auth.config.SmsConfig
 import net.nurigo.sdk.message.model.Message
 import net.nurigo.sdk.message.request.SingleMessageSendingRequest

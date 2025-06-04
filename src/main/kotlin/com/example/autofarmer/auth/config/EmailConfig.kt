@@ -16,6 +16,7 @@ class EmailConfig(
     // JavaMailSender 빈 등록
     @Bean
     fun javaMailSender(): JavaMailSender {
+        // JavaMailSenderImpl을 사용하여 이메일 전송 기능을 설정
         val mailSender = JavaMailSenderImpl().apply {
             host = emailProperties.host
             port = emailProperties.port

@@ -9,7 +9,6 @@ data class UpdateResponse(
     val nickname: String,
     val email: String,
     val password: String,
-    val alertType: String?,
     val updatedAt: LocalDateTime?
 ) : Serializable {
     companion object {
@@ -19,7 +18,6 @@ data class UpdateResponse(
                 user.nickname,
                 user.email,
                 user.password,
-                user.alertType,
                 user.updatedAt
             )
         }

@@ -14,6 +14,7 @@ class CustomAccessDeniedHandler(
     @Qualifier("handlerExceptionResolver")
     private val resolver: HandlerExceptionResolver
 ) : AccessDeniedHandler {
+    // AccessDeniedHandler 인터페이스를 구현하여 사용자가 권한이 없는 리소스에 접근할 때 호출되는 핸들러
     override fun handle(
         request: HttpServletRequest,
         response: HttpServletResponse,

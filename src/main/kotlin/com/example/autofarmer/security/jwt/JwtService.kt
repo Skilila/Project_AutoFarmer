@@ -8,6 +8,7 @@ import java.security.*
 import java.security.SignatureException
 import java.util.*
 
+//JWT 서비스 클래스
 @Component
 class JwtService(
     private val redisTemplate: StringRedisTemplate,
@@ -25,8 +26,10 @@ class JwtService(
     fun generateToken(
         subject: String,
     ): String {
+        //토큰 만료 시간 설정
         val now = Date()
         val expiration = Date(now.time + accessTokenExpiration)
+        //JWT 빌더를 사용하여 토큰 생성
         return Jwts.builder()
             .subject(subject)//주체
             .issuer("autofarmer")//발급자
@@ -43,14 +46,15 @@ class JwtService(
         redisTemplate.hasKey("blacklist:$pureToken") ?: {
             throw JwtException("로그아웃 처리된 토큰입니다")
         }
-
+        // JWT 파싱 및 검증
         return try {
             Jwts.parser()
                 .verifyWith(publicKey)//공개키로 서명 검증
                 .build()
                 .parseSignedClaims(token)//서명된 클레임을 파싱하고 검증
             true
-        } catch (e: Exception) {//예외 처리
+        } catch (e: Exception) {
+            //예외 처리
             when (e) {
                 is ExpiredJwtException -> throw JwtException("토큰이 만료되었습니다")
                 is UnsupportedJwtException -> throw JwtException("지원하지 않는 토큰 형식입니다")
@@ -67,6 +71,7 @@ class JwtService(
 
     //인증정보 추출
     fun extractClaims(token: String): Claims {
+        //토큰에서 Claims 추출
         return Jwts.parser()
             .verifyWith(publicKey)
             .build()

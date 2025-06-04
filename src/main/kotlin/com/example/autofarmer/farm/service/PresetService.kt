@@ -8,6 +8,7 @@ import com.example.autofarmer.user.repository.UserRepository
 import org.springframework.stereotype.Service
 import kotlin.math.abs
 
+// 프리셋 서비스
 @Service
 class PresetService(
     private val cropRepository: CropRepository,

@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.security.authentication.BadCredentialsException
 import org.springframework.web.bind.annotation.*
 
+// 인증 관련 API를 처리하는 컨트롤러
 @RestController
 @RequestMapping("/api/auth")
 class AuthController(
@@ -29,6 +30,7 @@ class AuthController(
         return try {
             //authService를 통해 회원가입 처리
             authService.signup(request)
+            //회원가입 성공 시 UserDTO 반환
             ResponseEntity.status(HttpStatus.CREATED).body(UserDTO(nickname = request.nickname, email = request.email))
         } catch (_: BadCredentialsException) {
             //이미 가입된 이메일인 경우
@@ -43,6 +45,7 @@ class AuthController(
         return try {
             //emailService를 통해 이메일 인증번호 발송
             val token = emailService.sendEmail(request.email)
+            //이메일 인증번호 발송 성공 시 토큰 반환
             ResponseEntity.ok("이메일 인증번호가 발송되었습니다.token: $token")
         } catch (_: Exception) {
             //이메일 발송 실패
@@ -58,6 +61,7 @@ class AuthController(
         //emailService를 통해 이메일 인증 확인
         val isVerified = emailService.verifyEmail(token)
         return if (isVerified) {
+            //이메일 인증 성공
             ResponseEntity.ok("이메일 인증이 완료되었습니다.")
         } else {
             //이메일 인증 실패
@@ -72,6 +76,7 @@ class AuthController(
         return try {
             //smsService를 통해 휴대폰 인증번호 발송
             smsService.sendSms(phone)
+            //휴대폰 인증번호 발송 성공
             ResponseEntity.ok("휴대폰 인증번호가 발송되었습니다.")
         } catch (_: Exception) {
             //휴대폰 인증번호 발송 실패
@@ -85,8 +90,10 @@ class AuthController(
         //smsService를 통해 휴대폰 인증 확인
         val isVerified = smsService.verifySms(code)
         return if (isVerified) {
+            //휴대폰 인증 성공
             ResponseEntity.ok("휴대폰 인증이 완료되었습니다.")
         } else {
+            //휴대폰 인증 실패
             ResponseEntity.status(HttpStatus.BAD_REQUEST).body("휴대폰 인증에 실패했습니다.")
         }
     }
@@ -96,8 +103,10 @@ class AuthController(
     fun login(
         @Valid @RequestBody request: AuthRequest.Login
     ): ResponseEntity<AuthResponse.Login> {
+        // authService를 통해 로그인 처리
         val loginResponse = authService.login(request)
         if (loginResponse.isSuccess) {
+            //로그인 성공 시 사용자 정보와 토큰 반환
             println("로그인 성공")
             return ResponseEntity.ok(
                 AuthResponse.Login(
@@ -108,6 +117,7 @@ class AuthController(
                 )
             )
         } else {
+            //로그인 실패 시 에러 메시지 반환
             println("로그인 실패")
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
                 AuthResponse.Login(
@@ -133,8 +143,10 @@ class AuthController(
             //비밀번호 재설정
             val isSuccess = authService.resetPasswordWithToken(token, request?.newPassword ?: "")
             if (!isSuccess) {
+                //토큰이 유효하지 않거나 만료된 경우
                 ResponseEntity.status(HttpStatus.BAD_REQUEST).body("유효하지 않거나 만료된 토큰입니다.")
             }
+            //비밀번호 재설정 성공
             ResponseEntity.ok("비밀번호가 성공적으로 변경되었습니다.")
         }
     }
@@ -148,8 +160,10 @@ class AuthController(
         return try {
             // authService를 통해 로그아웃 처리
             authService.logout(accessToken, refreshToken)
+            //로그아웃 성공
             ResponseEntity.ok("로그아웃이 완료되었습니다.")
         } catch (_: JwtException) {
+            //로그아웃 실패
             ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그아웃에 실패했습니다")
         }
     }
@@ -162,8 +176,10 @@ class AuthController(
         return try {
             // authService를 통해 회원탈퇴 처리
             authService.withdraw(accessToken)
+            //회원탈퇴 성공
             ResponseEntity.ok("회원탈퇴가 완료되었습니다.")
         } catch (_: JwtException) {
+            //회원탈퇴 실패
             ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("회원탈퇴에 실패했습니다.")
         }
     }

@@ -18,7 +18,7 @@ class JwtAuthenticationFilter(
     private val userDetailsService: UserDetailsService,
     private val jwtService: JwtService,
 ) : OncePerRequestFilter() {
-
+    // OncePerRequestFilter를 상속받아 요청당 한 번만 실행되는 필터
     override fun doFilterInternal(
         request: HttpServletRequest,
         response: HttpServletResponse,
@@ -48,18 +48,18 @@ class JwtAuthenticationFilter(
                         null,
                         foundUser.authorities
                     )
+                    //인증 토큰에 요청 정보 설정
                     authToken.details = WebAuthenticationDetailsSource().buildDetails(request)
                     //SecurityContext에 인증 정보 설정
                     SecurityContextHolder.getContext().authentication = authToken
                 }
-                //이미 인증된 사용자라면 필터 체인 진행
-                filterChain.doFilter(request, response)
-                return
             }
         } catch (e: JwtException) {
-            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, e.message)
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, e.message)// 401 Unauthorized 상태 코드와 예외 메시지 전송
             return
         }
+        //이미 인증된 사용자라면 필터 체인 진행
         filterChain.doFilter(request, response)
+        return
     }
 }

@@ -4,6 +4,7 @@ import com.example.autofarmer.farm.domain.Crop
 import com.example.autofarmer.farm.repository.CropRepository
 import org.springframework.stereotype.Service
 
+// 작물 서비스
 @Service
 class CropService(
     private val cropRepository: CropRepository,

@@ -21,6 +21,7 @@ import org.springframework.web.cors.CorsConfiguration
 import org.springframework.web.cors.CorsConfigurationSource
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource
 
+// Spring Security 설정 클래스
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
@@ -51,31 +52,35 @@ class SecurityConfig(
                     .requestMatchers("/api/user/**").permitAll()
                     .anyRequest().authenticated() // 나머지 요청은 인증 필요
             }
+            //인증 실패 시 처리
             .exceptionHandling { it ->
                 it
                     .authenticationEntryPoint(authenticationEntryPoint)
                     .accessDeniedHandler(accessDeniedHandler)
-            }//인증 실패 시 처리
+            }
+            // JWT 인증 필터 추가
             .addFilterBefore(
                 JwtAuthenticationFilter(userDetailsService, jwtService),
                 UsernamePasswordAuthenticationFilter::class.java
-            )// JWT 인증 필터 추가
+            )
+            // JWT 예외 처리 필터 추가
             .addFilterBefore(
                 JwtExceptionFilter(objectMapper),
                 JwtAuthenticationFilter::class.java
-            )// JWT 예외 처리 필터 추가
+            )
             .build()
     }
 
+    // CORS 설정을 위한 빈
     @Bean
     fun corsConfigurationSource(): CorsConfigurationSource {
         val configuration = CorsConfiguration()
-        configuration.allowedOrigins = listOf("http://localhost:3000")
-        configuration.allowedMethods = listOf("*")
-        configuration.allowedHeaders = listOf("*")
-        configuration.allowCredentials = true
-        val source = UrlBasedCorsConfigurationSource()
-        source.registerCorsConfiguration("/**", configuration)
+        configuration.allowedOrigins = listOf("http://localhost:3000")// 허용할 오리진 설정
+        configuration.allowedMethods = listOf("*")// 허용할 HTTP 메서드 설정
+        configuration.allowedHeaders = listOf("*")// 허용할 헤더 설정
+        configuration.allowCredentials = true// 자격 증명 허용 설정
+        val source = UrlBasedCorsConfigurationSource()// CORS 설정을 적용할 URL 경로 설정
+        source.registerCorsConfiguration("/**", configuration)// 모든 경로에 CORS 설정 적용
         return source
     }
 }

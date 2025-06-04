@@ -16,6 +16,7 @@ class SmsConfig(
     // DefaultMessageService 빈 등록
     @Bean
     fun messageService(): DefaultMessageService {
+        // NurigoApp을 사용하여 SMS 전송 기능을 설정
         val messageService = NurigoApp.initialize(
             smsProperties.key,
             smsProperties.secret,
