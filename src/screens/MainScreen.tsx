@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, ActivityIndicator, Alert } from 'react-native';
+import PushNotification from 'react-native-push-notification';
 
 const API_KEY = '948cca00bed4f917800c626aba79a4cc'; // 발급되는대로 OpenWeatherMap API 키로 교체
 const CITY = 'Seoul'; // 원하는 도시 이름, 부산대신 일단은 서울로
