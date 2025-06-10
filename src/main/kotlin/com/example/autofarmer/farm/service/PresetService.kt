@@ -6,6 +6,7 @@ import com.example.autofarmer.farm.repository.CropRepository
 import com.example.autofarmer.farm.repository.PresetRepository
 import com.example.autofarmer.user.repository.UserRepository
 import org.springframework.stereotype.Service
+import java.time.LocalDateTime
 import kotlin.math.abs
 
 // 프리셋 서비스
@@ -32,6 +33,8 @@ class PresetService(
             temperature = temperature,
             humidity = humidity,
         )
+        //프리셋 생성 시간 업데이트
+        preset.createdAt = LocalDateTime.now()
         //작물의 isPreset 상태 변경
         crop.isPreset = true
         //프리셋 저장
@@ -45,6 +48,19 @@ class PresetService(
         //사용자가 프리셋한 작물 목록 조회
         val presetList = presetRepository.findAllByUser(user)
         return presetList.map { it.crop }
+    }
+
+    //프리셋 수정
+    fun updatePreset(presetId: Long?, temperature: Double, humidity: Double) {
+        //프리셋 조회
+        val preset = presetRepository.findById(presetId!!).orElseThrow { NoSuchElementException("프리셋 없음 presetId=$presetId") }
+        //프리셋 정보 업데이트
+        preset.temperature = temperature
+        preset.humidity = humidity
+        //프리셋 수정 시간 업데이트
+        preset.updatedAt = LocalDateTime.now()
+        //프리셋 저장
+        presetRepository.save(preset)
     }
 
     //프리셋 해제

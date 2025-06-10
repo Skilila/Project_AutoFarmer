@@ -6,6 +6,7 @@ import com.example.autofarmer.user.domain.User
 import com.example.autofarmer.user.repository.UserRepository
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
+import java.time.LocalDateTime
 
 // 알림 관련 API 컨트롤러
 @RestController
@@ -35,7 +36,18 @@ class AlertController(
             "OTHER" -> alertService.createOtherAlert(user, request.message)
             else -> throw IllegalArgumentException("Invalid alert type")
         }
+        // 알림 생성 시간 업데이트
+        alert.createdAt = LocalDateTime.now()
         // 생성된 알림을 응답으로 반환
+        return ResponseEntity.ok(alert)
+    }
+
+    // 단일 알림 조회(알림 ID로 조회)
+    @GetMapping("/{alertId}")
+    fun getAlertById(@PathVariable alertId: Long): ResponseEntity<Alert> {
+        // 알림 ID로 알림 조회
+        val alert = alertService.getAlertById(alertId) ?: return ResponseEntity.notFound().build() // 알림이 없으면 404 응답
+        // 조회된 알림을 응답으로 반환
         return ResponseEntity.ok(alert)
     }
 
@@ -62,7 +74,7 @@ class AlertController(
     }
 
     //알림 읽음 처리
-    @PatchMapping("/{alertId}/read")
+    @PatchMapping("/{alertId}/update")
     fun markAlertAsRead(@PathVariable alertId: Long): ResponseEntity<Unit> {
         // 알림 ID로 알림을 읽음 처리
         alertService.markAlertAsRead(alertId)
@@ -71,7 +83,7 @@ class AlertController(
     }
 
     //알림 삭제
-    @DeleteMapping("/{alertId}")
+    @DeleteMapping("/{alertId}/delete")
     fun deleteAlert(@PathVariable alertId: Long): ResponseEntity<Unit> {
         // 알림 ID로 알림 삭제
         alertService.deleteAlert(alertId)

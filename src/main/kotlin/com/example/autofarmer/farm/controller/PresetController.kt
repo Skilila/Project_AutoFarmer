@@ -35,6 +35,19 @@ class PresetController(
         return presetService.getPreset(userId)
     }
 
+    //프리셋 수정
+    @PutMapping("/{presetId}/update")
+    fun updatePreset(
+        @PathVariable presetId: Long,
+        @RequestParam temperature: Double,
+        @RequestParam humidity: Double
+    ): ResponseEntity<String> {
+        // 프리셋 수정 서비스 호출
+        presetService.updatePreset(presetId, temperature, humidity)
+        // 프리셋 수정 완료 응답
+        return ResponseEntity.ok("프리셋 수정 완료")
+    }
+
     //프리셋 해제
     @DeleteMapping("/{cropId}/remove")
     fun removePreset(

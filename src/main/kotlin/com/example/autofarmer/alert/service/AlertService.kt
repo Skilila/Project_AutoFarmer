@@ -53,6 +53,12 @@ class AlertService(
         )
     }
 
+    //단일 알림 조회(알림 ID로 조회)
+    fun getAlertById(alertId: Long): Alert? {
+        // 알림 ID로 알림을 조회
+        return alertRepository.findById(alertId).orElse(null)
+    }
+
     //알림 조회(사용자별)(최근 알림 순으로 정렬)
     fun getAlertsByUserSortedByRecent(user: User): List<Alert> {
         // 사용자별로 알림을 생성 시간 기준으로 내림차순 정렬하여 조회

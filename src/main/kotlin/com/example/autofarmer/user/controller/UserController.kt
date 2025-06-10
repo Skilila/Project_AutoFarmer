@@ -13,7 +13,7 @@ import org.springframework.web.server.ResponseStatusException
 @RequestMapping("/api/user")
 class UserController(private val userService: UserService) {
     //전체 사용자 조회
-    @GetMapping
+    @GetMapping("/all")
     fun findAllUser(): ResponseEntity<List<UserDTO>> {
         val userList = userService.getAllUser()
         return ResponseEntity.ok(userList)
@@ -30,7 +30,7 @@ class UserController(private val userService: UserService) {
     }
 
     //사용자 정보 수정
-    @PatchMapping
+    @PatchMapping("/update")
     fun updateUser(@RequestBody request: UpdateRequest): ResponseEntity<UpdateResponse> {
         val updatedUser = userService.updateUserInfo(request)
         return ResponseEntity.ok(updatedUser)

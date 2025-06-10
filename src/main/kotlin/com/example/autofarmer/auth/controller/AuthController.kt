@@ -131,7 +131,7 @@ class AuthController(
     }
 
     //비밀번호 재설정
-    @PostMapping("/password-reset")
+    @PostMapping("/reset")
     fun passwordReset(
         @RequestParam(required = false) token: String?,
         @RequestBody(required = false) request: AuthRequest.ResetPassword?

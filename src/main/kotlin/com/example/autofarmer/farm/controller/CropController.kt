@@ -70,7 +70,7 @@ class CropController(
     }
 
     //작물 삭제
-    @DeleteMapping("/{cropId}")
+    @DeleteMapping("/{cropId}/delete")
     fun deleteCrop(
         @PathVariable cropId: Long
     ): ResponseEntity<String> {

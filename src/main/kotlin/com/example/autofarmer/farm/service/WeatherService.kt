@@ -10,7 +10,7 @@ import org.springframework.transaction.annotation.Transactional
 class WeatherService(
     private val weatherRepository: WeatherRepository
 ) {
-    // 날씨 정보 조회 (ID로)
+    // 날씨 상세정보 조회 (ID로)
     fun getWeatherById(weatherId: Long): Weather =
         weatherRepository.findById(weatherId).orElseThrow { NoSuchElementException("Weather not found") }
 
