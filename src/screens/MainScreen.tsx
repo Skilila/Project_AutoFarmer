@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, ActivityIndicator, Alert } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, ActivityIndicator, Alert, Animated, Dimensions } from 'react-native';
 import PushNotification from 'react-native-push-notification';
 
 const API_KEY = '948cca00bed4f917800c626aba79a4cc'; // 발급되는대로 OpenWeatherMap API 키로 교체
@@ -38,11 +38,25 @@ interface ForecastData {
   }>;
 }
 
+// 캘린더 데이터 타입
+interface CalendarData {
+  date: number;
+  hasEvent: boolean;
+  eventType?: 'watering' | 'fertilizing' | 'harvesting';
+  note?: string;
+}
+
 const MainScreen = () => {
   const [weatherData, setWeatherData] = useState<WeatherData | null>(null);
   const [tomorrowWeather, setTomorrowWeather] = useState<any>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [isExpanded, setIsExpanded] = useState(false);
+  const [expandAnimation] = useState(new Animated.Value(0));
+  
+  // 캘린더 데이터 (예시)
+  const [calendarData, setCalendarData] = useState<CalendarData[]>([]);
+  const [selectedDate, setSelectedDate] = useState<number | null>(null);
 
   const fetchWeatherData = async () => {
     try {
@@ -93,6 +107,134 @@ const MainScreen = () => {
     }
   };
 
+  // 캘린더 데이터 초기화
+  const initializeCalendarData = () => {
+    const today = new Date();
+    const currentMonth = today.getMonth();
+    const currentYear = today.getFullYear();
+    const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+    
+    const calendarDays: CalendarData[] = [];
+    
+    for (let i = 1; i <= daysInMonth; i++) {
+      const hasEvent = Math.random() > 0.7; // 30% 확률로 이벤트 있음
+      const eventTypes: ('watering' | 'fertilizing' | 'harvesting')[] = ['watering', 'fertilizing', 'harvesting'];
+      const eventType = eventTypes[Math.floor(Math.random() * eventTypes.length)];
+      
+      calendarDays.push({
+        date: i,
+        hasEvent,
+        eventType: hasEvent ? eventType : undefined,
+        note: hasEvent ? `${i}일 작업 예정` : undefined
+      });
+    }
+    
+    setCalendarData(calendarDays);
+  };
+
+  // 더보기 버튼 클릭 핸들러
+  const toggleExpansion = () => {
+    const toValue = isExpanded ? 0 : 1;
+    
+    Animated.timing(expandAnimation, {
+      toValue,
+      duration: 300,
+      useNativeDriver: false,
+    }).start();
+    
+    setIsExpanded(!isExpanded);
+    
+    if (!isExpanded && calendarData.length === 0) {
+      initializeCalendarData();
+    }
+  };
+
+  // 날짜 선택 핸들러
+  const handleDatePress = (date: number) => {
+    setSelectedDate(selectedDate === date ? null : date);
+  };
+
+  // 캘린더 렌더링
+  const renderCalendar = () => {
+    const today = new Date().getDate();
+    
+    return (
+      <View style={styles.calendarContainer}>
+        <Text style={styles.calendarTitle}>작업 일정</Text>
+        <View style={styles.calendarGrid}>
+          {calendarData.map((day, index) => (
+            <TouchableOpacity
+              key={index}
+              style={[
+                styles.calendarDay,
+                day.hasEvent && styles.calendarDayWithEvent,
+                day.date === today && styles.calendarToday,
+                selectedDate === day.date && styles.calendarSelected
+              ]}
+              onPress={() => handleDatePress(day.date)}
+            >
+              <Text style={[
+                styles.calendarDayText,
+                day.date === today && styles.calendarTodayText,
+                selectedDate === day.date && styles.calendarSelectedText
+              ]}>
+                {day.date}
+              </Text>
+              {day.hasEvent && (
+                <View style={[
+                  styles.eventDot,
+                  day.eventType === 'watering' && styles.wateringDot,
+                  day.eventType === 'fertilizing' && styles.fertilizingDot,
+                  day.eventType === 'harvesting' && styles.harvestingDot
+                ]} />
+              )}
+            </TouchableOpacity>
+          ))}
+        </View>
+        
+        {/* 선택된 날짜 정보 */}
+        {selectedDate !== null && (
+          <View style={styles.selectedDateInfo}>
+            <Text style={styles.selectedDateTitle}>{selectedDate}일 일정</Text>
+            {calendarData[selectedDate - 1]?.hasEvent ? (
+              <View>
+                <Text style={styles.selectedDateEvent}>
+                  {calendarData[selectedDate - 1]?.eventType === 'watering' && '🚿 물주기'}
+                  {calendarData[selectedDate - 1]?.eventType === 'fertilizing' && '🌱 비료주기'}
+                  {calendarData[selectedDate - 1]?.eventType === 'harvesting' && '🍅 수확'}
+                </Text>
+                <Text style={styles.selectedDateNote}>
+                  {calendarData[selectedDate - 1]?.note}
+                </Text>
+              </View>
+            ) : (
+              <Text style={styles.noEventText}>예정된 작업이 없습니다</Text>
+            )}
+          </View>
+        )}
+        
+        {/* 범례 */}
+        <View style={styles.legendContainer}>
+          <Text style={styles.legendTitle}>범례:</Text>
+          <View style={styles.legendRow}>
+            <View style={styles.legendItem}>
+              <View style={[styles.legendDot, styles.wateringDot]} />
+              <Text style={styles.legendText}>물주기</Text>
+            </View>
+            <View style={styles.legendItem}>
+              <View style={[styles.legendDot, styles.fertilizingDot]} />
+              <Text style={styles.legendText}>비료주기</Text>
+            </View>
+            <View style={styles.legendItem}>
+              <View style={[styles.legendDot, styles.harvestingDot]} />
+              <Text style={styles.legendText}>수확</Text>
+            </View>
+          </View>
+        </View>
+      </View>
+    );
+  };
+
   useEffect(() => {
     fetchWeatherData();
     
@@ -103,6 +245,11 @@ const MainScreen = () => {
     
     return () => clearInterval(interval);
   }, []);
+
+  const expandedHeight = expandAnimation.interpolate({
+    inputRange: [0, 1],
+    outputRange: [0, 400], // 확장될 높이
+  });
 
   return (
     <View style={styles.container}>
@@ -179,12 +326,24 @@ const MainScreen = () => {
         </TouchableOpacity>
       </View>
 
-      {/* 더보기 */}
+      {/* 더보기 버튼 */}
       <View style={styles.moreButtonContainer}>
-        <TouchableOpacity style={styles.moreButton}>
-          <Text style={styles.moreButtonText}>더보기</Text>
+        <TouchableOpacity 
+          style={styles.moreButton}
+          onPress={toggleExpansion}
+        >
+          <Text style={styles.moreButtonText}>
+            {isExpanded ? '접기' : '더보기'}
+          </Text>
         </TouchableOpacity>
       </View>
+
+      {/* 확장 가능한 캘린더 섹션 */}
+      <Animated.View style={[styles.expandableSection, { height: expandedHeight }]}>
+        <ScrollView style={styles.expandableContent}>
+          {renderCalendar()}
+        </ScrollView>
+      </Animated.View>
 
       {/* 좌우로 스크롤 가능한 카드 */}
       <ScrollView horizontal style={styles.taskCardsContainer}>
@@ -325,6 +484,141 @@ const styles = StyleSheet.create({
   },
   moreButtonText: {
     fontSize: 12,
+  },
+  // 확장 가능한 섹션 스타일
+  expandableSection: {
+    overflow: 'hidden',
+    backgroundColor: '#fff',
+    marginHorizontal: 10,
+    borderRadius: 10,
+    elevation: 2,
+  },
+  expandableContent: {
+    flex: 1,
+  },
+  // 캘린더 스타일
+  calendarContainer: {
+    padding: 15,
+  },
+  calendarTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 15,
+    textAlign: 'center',
+    color: '#333',
+  },
+  calendarGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+  },
+  calendarDay: {
+    width: '13%',
+    aspectRatio: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 5,
+    borderRadius: 5,
+    backgroundColor: '#f9f9f9',
+    position: 'relative',
+  },
+  calendarDayWithEvent: {
+    backgroundColor: '#e8f4f8',
+  },
+  calendarToday: {
+    backgroundColor: '#4a90e2',
+  },
+  calendarSelected: {
+    backgroundColor: '#2c5aa0',
+  },
+  calendarDayText: {
+    fontSize: 12,
+    color: '#333',
+  },
+  calendarTodayText: {
+    color: '#fff',
+    fontWeight: 'bold',
+  },
+  calendarSelectedText: {
+    color: '#fff',
+    fontWeight: 'bold',
+  },
+  eventDot: {
+    position: 'absolute',
+    bottom: 2,
+    right: 2,
+    width: 6,
+    height: 6,
+    borderRadius: 3,
+  },
+  wateringDot: {
+    backgroundColor: '#4fc3f7',
+  },
+  fertilizingDot: {
+    backgroundColor: '#66bb6a',
+  },
+  harvestingDot: {
+    backgroundColor: '#ff7043',
+  },
+  // 선택된 날짜 정보
+  selectedDateInfo: {
+    marginTop: 15,
+    padding: 15,
+    backgroundColor: '#f0f8ff',
+    borderRadius: 8,
+    borderLeftWidth: 4,
+    borderLeftColor: '#4a90e2',
+  },
+  selectedDateTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginBottom: 8,
+    color: '#333',
+  },
+  selectedDateEvent: {
+    fontSize: 14,
+    marginBottom: 5,
+    color: '#2c5aa0',
+  },
+  selectedDateNote: {
+    fontSize: 12,
+    color: '#666',
+  },
+  noEventText: {
+    fontSize: 14,
+    color: '#999',
+    fontStyle: 'italic',
+  },
+  // 범례
+  legendContainer: {
+    marginTop: 15,
+    padding: 10,
+    backgroundColor: '#f9f9f9',
+    borderRadius: 5,
+  },
+  legendTitle: {
+    fontSize: 12,
+    fontWeight: 'bold',
+    marginBottom: 8,
+    color: '#666',
+  },
+  legendRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+  },
+  legendItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  legendDot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    marginRight: 5,
+  },
+  legendText: {
+    fontSize: 10,
+    color: '#666',
   },
   taskCardsContainer: {
     padding: 10,
