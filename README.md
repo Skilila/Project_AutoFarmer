@@ -1,3 +1,7 @@
+0611 현재 캘린더 기능 추가된 커밋내용은 (더보기) 버튼 누르면 나타납니다.
+
+
+-----------------------------------------------------------------
 This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
 
 # Getting Started
